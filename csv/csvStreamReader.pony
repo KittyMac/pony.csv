@@ -118,7 +118,6 @@ actor CSVStreamReader is Streamable
 					else
 						parseState = state_quotes
 						i = i + 1
-						rowString.push(c)
 					end
 				end
 				
