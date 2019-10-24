@@ -41,6 +41,8 @@ actor CSVStreamReader is Streamable
 	
 	fun ref saveCurrentItem() =>
 		// When we encounter a comma or newline outside of quoted space, save this item to the array
+		rowString.strip()
+		rowString.strip("\"")
 		rowString.compact()
 		lastStringSize = rowString.size()
 		
