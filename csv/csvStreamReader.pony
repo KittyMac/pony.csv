@@ -24,24 +24,29 @@ actor CSVStreamReader is Streamable
 	var currentRowPartsIso:Array[String] iso
 	var rowString:String iso
 	
+	// lastStringSize is used to optimize new string allocations
+	var lastStringSize:USize = 512
+	
 	
 	var parseState:U32 = 0
-	var charPos:U32 = 0
 	
 	new create(env':Env, target':CSVStreamable tag) =>
 		target = target'
 		env = env'
 		
-		rowString = recover String end
+		rowString = recover String(lastStringSize) end
 		parseState = state_normal
 		
 		currentRowPartsIso = recover iso Array[String] end
 	
 	fun ref saveCurrentItem() =>
 		// When we encounter a comma or newline outside of quoted space, save this item to the array
+		rowString.compact()
+		lastStringSize = rowString.size()
+		
 		rowString = recover
 			currentRowPartsIso.push(consume rowString)
-			recover iso String end
+			recover iso String(lastStringSize * 2) end
 		end
 	
 	fun ref sendCurrentItems() =>
@@ -50,6 +55,10 @@ actor CSVStreamReader is Streamable
 			target.stream(consume currentRowPartsIso)
 			recover iso Array[String] end
 		end
+	
+	fun ref sendZeroItems() =>
+		// When we encounter a newline outside of quoted text, send off the row
+		target.stream(recover iso Array[String] end)
 	
 	be stream(chunkIso:Array[U8] iso) =>
 		// we received chunks of data from the normal Streamable stream.  We need to:
@@ -64,12 +73,16 @@ actor CSVStreamReader is Streamable
 				// we reached the end of the stream
 				saveCurrentItem()
 				sendCurrentItems()
+				sendZeroItems()
 			end
 			
-			while chunkIso.size() > 0 do			
+			let max = chunkIso.size()
+			var i:USize = 0
+			while i < max do
+				let c:U8 = chunkIso(i)?
+				
 				if parseState == state_normal then
-					let c:U8 = chunkIso.shift()?
-					charPos = charPos + 1
+					i = i + 1
 					
 					// watch for comma and new lines.
 					if (c == comma) or (c == newLine) then
@@ -87,8 +100,7 @@ actor CSVStreamReader is Streamable
 				
 				elseif parseState == state_quotes then
 					// we're inside quoted material.
-					let c:U8 = chunkIso.shift()?
-					charPos = charPos + 1
+					i = i + 1
 					
 					rowString.push(c)
 					
@@ -98,22 +110,19 @@ actor CSVStreamReader is Streamable
 				
 				
 				elseif parseState == state_escapeQuotes then
-					// the last character was a quote, we need to check if this character is a quote or not
-					let c:U8 = chunkIso(0)?
-				
+					// the last character was a quote, we need to check if this character is a quote or not				
 					if c != doubleQuote then
 						parseState = state_normal
 					else
 						parseState = state_quotes
-						chunkIso.shift()?
-						charPos = charPos + 1
+						i = i + 1
 						rowString.push(c)
 					end
 				end
 				
 			end
 		end
-		
+				
 		
 		
 	
