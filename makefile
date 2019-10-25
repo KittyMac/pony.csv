@@ -1,3 +1,3 @@
 all:
-	stable env ponyc -o ./build/ ./csv
+	stable env /Volumes/Development/Development/pony/ponyc/build/release/ponyc -o ./build/ ./csv
 	./build/csv

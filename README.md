@@ -1,5 +1,13 @@
 # pony.csv
 
+**WARNING: [THIS ONLY WORKS WITH MY FORK OF PONY](https://github.com/KittyMac/ponyc/tree/roc)**
+
+### Purpose
+
+This repository is just me hacking around with [Pony](https://www.ponylang.io). It should not be used as an example of good Pony programming practices.
+
+### Streaming parsing of CSV data
+
 A simple streaming CSV (comma separated values) reader and writer for Pony.
 
 Utilizes the Streamable type available in the [pony.fileExt](https://github.com/KittyMac/pony.fileExt) library.

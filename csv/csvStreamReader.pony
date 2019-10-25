@@ -62,7 +62,7 @@ actor CSVStreamReader is Streamable
 		// When we encounter a newline outside of quoted text, send off the row
 		target.stream(recover iso Array[String] end)
 	
-	be stream(chunkIso:Array[U8] iso) =>
+	be stream(chunkIso:ByteBlock iso) =>
 		// we received chunks of data from the normal Streamable stream.  We need to:
 		// 1. Continuously parse the chunks as they come in
 		// 2. When we have enough data to identify one "row" of the csv, we forward that row to
