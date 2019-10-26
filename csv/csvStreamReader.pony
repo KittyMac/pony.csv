@@ -59,7 +59,7 @@ actor CSVStreamReader is Streamable
 		end
 	
 	fun ref sendZeroItems() =>
-		// When we encounter a newline outside of quoted text, send off the row
+		// We're all done and need to let the next node know
 		target.stream(recover iso Array[String] end)
 	
 	be stream(chunkIso:ByteBlock iso) =>
@@ -123,6 +123,9 @@ actor CSVStreamReader is Streamable
 				
 			end
 		end
+		
+		// We don't pass this block to anyone, so we get rid of it now
+		chunkIso.free()
 				
 		
 		
