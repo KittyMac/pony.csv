@@ -10,13 +10,13 @@ This repository is just me hacking around with [Pony](https://www.ponylang.io). 
 
 A simple streaming CSV (comma separated values) reader and writer for Pony.
 
-Utilizes the Streamable type available in the [pony.fileExt](https://github.com/KittyMac/pony.fileExt) library.
+Utilizes the Flowable type available in the [pony.fileExt](https://github.com/KittyMac/pony.flow) library.
 
 ```
 // Use a file streamer to pipe the content through the CSV reader and 
 // then through the CSV printer to see it in the console
-FileExtStreamReader(h.env, "simple.csv", 4,
-	CSVStreamReader(h.env, CSVStreamPrintEnd(h.env))
+FileExtFlowReader(h.env, "simple.csv", 4,
+	CSVFlowReader(h.env, CSVFlowPrintEnd(h.env))
 )
 ```
 

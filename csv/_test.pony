@@ -1,5 +1,6 @@
 use "fileExt"
 use "ponytest"
+use "files"
 
 use @sleep[I32](seconds: I32)
 
@@ -17,9 +18,12 @@ class iso _TestSimpleCSV is UnitTest
 
 	fun apply(h: TestHelper) =>
 		// Using a low chunk size to test the wrapping of the CSV reader
-		FileExtStreamReader(h.env, "simple.csv", 3,
-			CSVStreamReader(h.env, CSVStreamPrintEnd(h.env))
-		)
+		try
+			var inFilePath = FilePath(h.env.root as AmbientAuth, "simple.csv", FileCaps.>all())?
+			FileExtFlowReader(inFilePath, 3,
+				CSVFlowReader(CSVFlowPrintEnd(h.env))
+			)
+		end
 
 class iso _TestComplexCSV is UnitTest
 	fun name(): String => "complex csv"
@@ -27,6 +31,9 @@ class iso _TestComplexCSV is UnitTest
 	fun apply(h: TestHelper) =>
 		@sleep(3)
 		// Using a low chunk size to test the wrapping of the CSV reader
-		FileExtStreamReader(h.env, "complex.csv", 7,
-			CSVStreamReader(h.env, CSVStreamPrintEnd(h.env))
-		)
+		try
+			var inFilePath = FilePath(h.env.root as AmbientAuth, "complex.csv", FileCaps.>all())?
+			FileExtFlowReader(inFilePath, 7,
+				CSVFlowReader(CSVFlowPrintEnd(h.env))
+			)
+		end
