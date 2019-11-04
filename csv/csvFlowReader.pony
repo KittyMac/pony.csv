@@ -19,10 +19,7 @@ actor CSVFlowReader is Flowable
 	
 	var currentRowPartsIso:Array[String] iso
 	var rowString:String iso
-	
-	// lastStringSize is used to optimize new string allocations
-	var lastStringSize:USize = 512
-	
+		
 	var parseState:U32 = 0
 	
 	fun _batch():USize => 4
@@ -30,28 +27,25 @@ actor CSVFlowReader is Flowable
 	new create(target':Flowable tag) =>
 		target = target'
 		
-		rowString = recover String(lastStringSize) end
+		rowString = recover String(1024 * 1024 * 16) end
 		parseState = state_normal
 		
-		currentRowPartsIso = recover iso Array[String] end
+		currentRowPartsIso = recover iso Array[String](32) end
 	
 	fun ref saveCurrentItem() =>
 		// When we encounter a comma or newline outside of quoted space, save this item to the array
 		rowString.strip()
 		rowString.strip("\"")
-		rowString.compact()
-		lastStringSize = rowString.size()
 		
-		rowString = recover
-			currentRowPartsIso.push(consume rowString)
-			recover iso String(lastStringSize * 2) end
-		end
+		let rowCopy = rowString.clone()
+		currentRowPartsIso.push(consume rowCopy)
+		rowString.clear()
 	
 	fun ref sendCurrentItems() =>
 		// When we encounter a newline outside of quoted text, send off the row
 		currentRowPartsIso = recover
 			target.flowReceived(consume currentRowPartsIso)
-			recover iso Array[String] end
+			recover iso Array[String](32) end
 		end
 		
 	be flowFinished() =>
