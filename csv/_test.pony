@@ -2,8 +2,6 @@ use "fileExt"
 use "ponytest"
 use "files"
 
-use @sleep[I32](seconds: I32)
-
 actor Main is TestList
 	new create(env: Env) => PonyTest(env, this)
 	new make() => None
@@ -29,7 +27,6 @@ class iso _TestComplexCSV is UnitTest
 	fun name(): String => "complex csv"
 
 	fun apply(h: TestHelper) =>
-		@sleep(3)
 		// Using a low chunk size to test the wrapping of the CSV reader
 		try
 			var inFilePath = FilePath(h.env.root as AmbientAuth, "complex.csv", FileCaps.>all())?
