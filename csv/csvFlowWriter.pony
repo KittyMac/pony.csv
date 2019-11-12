@@ -15,6 +15,7 @@ actor CSVFlowWriter is Flowable
 	
 	
 	fun _batch():USize => 4
+	fun _tag():USize => 104
 	
 	new create(target':Flowable tag) =>
 		target = target'

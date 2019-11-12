@@ -23,6 +23,7 @@ actor CSVFlowReader is Flowable
 	var parseState:U32 = 0
 	
 	fun _batch():USize => 4
+	fun _tag():USize => 103
 	
 	new create(target':Flowable tag) =>
 		target = target'
