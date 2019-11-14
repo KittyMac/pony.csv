@@ -7,9 +7,9 @@ actor CSVFlowPrintEnd is Flowable
 	Simple print CSV arrays to the console; useful for debugging
 	"""
 	
-	fun _tag():USize => 102
-	
 	let env:Env
+	
+	fun _tag():USize => 102
 	
 	new create(env':Env) =>
 		env = env'
