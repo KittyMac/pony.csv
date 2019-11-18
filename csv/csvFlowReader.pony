@@ -2,6 +2,11 @@ use "collections"
 use "fileExt"
 use "flow"
 
+interface CPointerApply
+	fun apply(i: USize): U8 ?
+	fun cpointer(offset: USize = 0): Pointer[U8] tag
+	fun size(): USize
+
 actor CSVFlowReader is Flowable
 	"""
 	Converts chunked binary input into row-based chunks ( "line by line" results from the CSV )
@@ -58,7 +63,7 @@ actor CSVFlowReader is Flowable
 		let data:Any ref = consume dataIso
 		
 		try
-			let chunk = data as ByteBlock ref
+			let chunk = data as CPointerApply ref
 		
 			// we received chunks of data from the normal Flowable stream.  We need to:
 			// 1. Continuously parse the chunks as they come in
@@ -113,9 +118,8 @@ actor CSVFlowReader is Flowable
 				
 				end
 			end
-		
-			// We don't pass this block to anyone, so we get rid of it now
-			chunk.free()
+		else
+			@fprintf[I64](@pony_os_stdout[Pointer[U8]](), "CSVFlowReader requires a CPointerApply flowable\n".cstring())
 		end
 		
 		

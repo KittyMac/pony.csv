@@ -9,6 +9,12 @@ actor Main is TestList
 	fun tag tests(test: PonyTest) =>
 		test(_TestSimpleCSV)
 		test(_TestComplexCSV)
+	
+ 	fun @runtime_override_defaults(rto: RuntimeOptions) =>
+		rto.ponyminthreads = 2
+		rto.ponynoblock = true
+		rto.ponygcinitial = 0
+		rto.ponygcfactor = 1.0
 
 
 class iso _TestSimpleCSV is UnitTest
@@ -16,21 +22,17 @@ class iso _TestSimpleCSV is UnitTest
 
 	fun apply(h: TestHelper) =>
 		// Using a low chunk size to test the wrapping of the CSV reader
-		try
-			var inFilePath = FilePath(h.env.root as AmbientAuth, "simple.csv", FileCaps.>all())?
-			FileExtFlowReader(inFilePath, 3,
-				CSVFlowReader(CSVFlowPrintEnd(h.env))
-			)
-		end
+		var inFilePath = "simple.csv"
+		FileExtFlowReader(inFilePath, 3,
+			CSVFlowReader(CSVFlowPrintEnd(h.env))
+		)
 
 class iso _TestComplexCSV is UnitTest
 	fun name(): String => "complex csv"
 
 	fun apply(h: TestHelper) =>
 		// Using a low chunk size to test the wrapping of the CSV reader
-		try
-			var inFilePath = FilePath(h.env.root as AmbientAuth, "complex.csv", FileCaps.>all())?
-			FileExtFlowReader(inFilePath, 7,
-				CSVFlowReader(CSVFlowPrintEnd(h.env))
-			)
-		end
+		var inFilePath = "complex.csv"
+		FileExtFlowReader(inFilePath, 7,
+			CSVFlowReader(CSVFlowPrintEnd(h.env))
+		)
