@@ -12,9 +12,7 @@ actor CSVFlowWriter is Flowable
 	let newLine:U8 = 10
 	
 	let target:Flowable tag
-	
-	
-	fun _batch():USize => 4
+		
 	fun _tag():USize => 104
 	
 	new create(target':Flowable tag) =>
