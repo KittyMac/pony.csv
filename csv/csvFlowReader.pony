@@ -121,6 +121,8 @@ actor CSVFlowReader is Flowable
 			@fprintf[I64](@pony_os_stdout[Pointer[U8]](), "CSVFlowReader requires a CPointerApply flowable\n".cstring())
 		end
 		
-		
+		if @ponyint_actor_num_messages[USize](target) > 100 then
+			@ponyint_actor_yield[None](this)
+		end
 	
 	
