@@ -39,7 +39,9 @@ actor CSVFlowReader is Flowable
 	
 	fun ref saveCurrentItem() =>
 		// When we encounter a comma or newline outside of quoted space, save this item to the array
-		rowString.strip(" \t\v\f\r\n\"")
+		rowString.strip(" \t\v\f\r\n")
+    // strip a single \" from each side if it exists
+    rowString.strip("\"", 1)
 		
 		let rowCopy = rowString.clone()
 		currentRowPartsIso.push(consume rowCopy)

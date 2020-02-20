@@ -1,10 +1,10 @@
 {
   "locks": [
     {
-      "locator": "github.com/KittyMac/pony.fileExt.git"
+      "locator": "/Volumes/Development/Development/pony/pony.fileExt"
     },
     {
-      "locator": "github.com/KittyMac/pony.flow.git"
+      "locator": "/Volumes/Development/Development/pony/pony.flow"
     }
   ]
 }
