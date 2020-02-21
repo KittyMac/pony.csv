@@ -18,8 +18,8 @@ actor CSVFlowWriter is Flowable
 	new create(target':Flowable tag) =>
 		target = target'
 			
-  	be flowFinished() =>
-  		target.flowFinished()
+	be flowFinished() =>
+		target.flowFinished()
 
 	be flowReceived(dataIso:Any iso) =>
     // We expect to receive Array[String], which we convert to String and pass along    
@@ -28,7 +28,13 @@ actor CSVFlowWriter is Flowable
     
     try
       let row = data as Array[String] ref
-      var composite:String iso = recover String(1024) end
+      var stringSizeRequired:USize = 0
+      for item in row.values() do
+        stringSizeRequired = stringSizeRequired + item.size()
+      end
+      stringSizeRequired = stringSizeRequired + 128
+      
+      var composite:String iso = recover String(stringSizeRequired) end
       
       for item in row.values() do
         composite.push(doubleQuote)
